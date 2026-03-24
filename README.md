@@ -35,12 +35,7 @@ A complete e-commerce application built with Laravel for kitchen items, fresh me
 ### Beef Products
 - Beef Chuck Roast
 - Ground Beef
-
-### Fresh Vegetables
-- Fresh Tomatoes
-- Onions
-- Fresh Potatoes
-- Carrots
+ 
 
 ## Installation
 
