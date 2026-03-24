@@ -58,10 +58,22 @@
       <!-- Mobile filter drawer -->
       <div id="mobileFilters" class="hidden fixed inset-0 z-50 bg-white p-6 overflow-y-auto">
         <div class="flex justify-between items-center mb-6">
-          <h2 class="font-display text-xl font-bold">Sub-category</h2>
+          <h2 class="font-display text-xl font-bold">Categories</h2>
           <button id="closeFilters"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>
         </div>
-        <div class="flex flex-wrap gap-2" id="subCatMobile"></div>
+        
+        <!-- All Categories Section -->
+        <div class="mb-6">
+          <h3 class="font-display text-sm font-bold text-charcoal mb-3">All Categories</h3>
+          <div class="space-y-1" id="allCatMobile"></div>
+        </div>
+        
+        <!-- Sub-categories Section (only shown when parent category has subs) -->
+        <div id="subCatMobileSection" class="hidden">
+          <h3 class="font-display text-sm font-bold text-charcoal mb-3">Sub-category</h3>
+          <div class="flex flex-wrap gap-2" id="subCatMobile"></div>
+        </div>
+        
         <button id="applyFilters" class="mt-8 w-full py-3 rounded-full bg-accent text-white font-semibold">Apply</button>
       </div>
 
@@ -234,13 +246,18 @@
     var bar  = document.getElementById('subCatTabsBar');
     var el   = document.getElementById('subCatTabs');
     var mob  = document.getElementById('subCatMobile');
+    var mobSection = document.getElementById('subCatMobileSection');
 
     if (!hasSubCats) {
       bar.classList.add('hidden');
-      if (mob) mob.innerHTML = '';
+      if (mob) {
+        mob.innerHTML = '';
+        mobSection.classList.add('hidden');
+      }
       return;
     }
     bar.classList.remove('hidden');
+    mobSection.classList.remove('hidden');
 
     var all = [{slug: 'all', title: 'All'}].concat(subCats);
 
@@ -264,6 +281,29 @@
     }
     attachTabEvents(el);
     if (mob) attachTabEvents(mob);
+  }
+
+  // ── Render: All Categories mobile ───────────────────────────────
+  function renderAllCatMobile() {
+    var el = document.getElementById('allCatMobile');
+    if (!el) return;
+
+    // "All Products" link
+    var allActive = slug === 'all';
+    var html = '<a href="/categories?slug=all" class="block px-3 py-2 rounded-lg text-sm font-medium transition-colors ' +
+      (allActive ? 'bg-blue-50 text-accent font-semibold' : 'text-gray-600 hover:bg-gray-100') + '">All Products</a>';
+
+    // Only top-level parent categories in the list
+    var parentCats = categories.filter(function(c) { return !c.parent_name; });
+
+    parentCats.forEach(function(c) {
+      // Active if: current slug === this cat OR current category's parent is this cat
+      var isActive = c.slug === slug || (currentCat && currentCat.parent_name === c.title);
+      html += '<a href="/categories?slug=' + c.slug + '" class="block px-3 py-2 rounded-lg text-sm font-medium transition-colors ' +
+        (isActive ? 'bg-blue-50 text-accent font-semibold' : 'text-gray-600 hover:bg-gray-100') + '">' + c.title + '</a>';
+    });
+
+    el.innerHTML = html;
   }
 
   // ── Render: All Categories sidebar ───────────────────────────────
@@ -369,6 +409,7 @@
     renderSubCatSidebar();
     renderSubCatTabs();
     renderAllCatSidebar();
+    renderAllCatMobile();
     renderGrid();
   }
 

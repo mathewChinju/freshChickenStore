@@ -235,7 +235,7 @@ var heroSlides = [
     highlight: 'Delivered Fresh',
     titleEnd: ' Daily',
     description: 'Hand-selected chicken, beef, and lamb — sourced fresh every morning from trusted local farms.',
-    link: 'category.html?slug=chicken',
+    link: '/categories?slug=all',
     cta: 'Shop Now',
   },
   {
@@ -245,7 +245,7 @@ var heroSlides = [
     highlight: 'Beef Cuts',
     titleEnd: '',
     description: 'From whole brisket to diced chuck — only the finest beef makes it to your table.',
-    link: 'category.html?slug=beef',
+    link: '/categories?slug=beef',
     cta: 'Explore Beef',
   },
   {
@@ -255,7 +255,7 @@ var heroSlides = [
     highlight: 'Lamb',
     titleEnd: ' for Every Occasion',
     description: 'Slow-cook ready diced lamb, vacuum packed and hormone free.',
-    link: 'category.html?slug=lamb',
+    link: '/categories?slug=lamb',
     cta: 'View Lamb',
   },
   {
@@ -265,7 +265,7 @@ var heroSlides = [
     highlight: 'Whole Chicken',
     titleEnd: '',
     description: 'Size 12 to Size 26 — pick the perfect whole chicken for your family.',
-    link: 'category.html?slug=chicken',
+    link: '/categories?slug=chicken',
     cta: 'Shop Chicken',
   },
 ];
