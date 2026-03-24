@@ -1,4 +1,4 @@
-# Kitchen & Meat Store E-commerce Application
+# Fresh Anywhere -meat Store E-commerce Application
 
 A complete e-commerce application built with Laravel for kitchen items, fresh meat, and vegetables. Allows administrators to manage products and orders, while customers can browse fresh produce and inquire through WhatsApp.
 
