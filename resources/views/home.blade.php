@@ -115,6 +115,9 @@
   window.laravelCategories = @json($categories ?? []);
   window.laravelProducts = @json($products ?? []);
   
+  // Define featuredProducts variable
+  var featuredProducts = [];
+  
   console.log('Laravel Categories:', window.laravelCategories);
   console.log('Laravel Products:', window.laravelProducts);
   
@@ -133,7 +136,6 @@
   
   if (window.laravelProducts && window.laravelProducts.length > 0) {
     featuredProducts = window.laravelProducts.map(function(product) {
-      var imageUrl = '{{ asset("images/product-chicken-breast-CIs70tOD.jpg") }}';
       var imageUrl = product.primary_image_url || '{{ asset("images/product-chicken-breast-CIs70tOD.jpg") }}';
       return {
         id: product.id,

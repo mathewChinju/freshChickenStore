@@ -93,6 +93,25 @@
                         @enderror
                     </div>
 
+                    <!-- Tags -->
+                    <div class="form-group-full">
+                        <label for="tags" class="form-label-standard">
+                            Product Tags
+                        </label>
+                        <input type="text" 
+                               class="form-control-standard @error('tags') is-invalid @enderror" 
+                               id="tags" 
+                               name="tags" 
+                               value="{{ old('tags') }}" 
+                               placeholder="Enter tags separated by commas (e.g., fresh, organic, premium)">
+                        <div class="form-help-text">
+                            Separate multiple tags with commas. Tags will be displayed on the product page.
+                        </div>
+                        @error('tags')
+                            <div class="error-message">{{ $message }}</div>
+                        @enderror
+                    </div>
+
                     <!-- SKU and Category -->
                     <div class="form-row">
                         <div class="form-group-half">
@@ -120,10 +139,10 @@
                                     id="category_id" 
                                     name="category_id">
                                 <option value="">Select Category</option>
-                                @foreach(\App\Models\Category::where('is_active', true)->orderBy('name')->get() as $category)
+                                @foreach($categories as $category)
                                     <option value="{{ $category->id }}" 
                                             {{ old('category_id') == $category->id ? 'selected' : '' }}>
-                                        {{ $category->name }}
+                                        {{ $category->parent ? $category->parent->name . ' > ' : '' }}{{ $category->name }}
                                     </option>
                                 @endforeach
                             </select>
@@ -248,7 +267,7 @@
                                    id="rating" 
                                    name="rating" 
                                    value="{{ old('rating', 4.5) }}" 
-                                   placeholder="4.5" 
+                                   placeholder="maximun rating 5" 
                                    step="0.1"
                                    min="0"
                                    max="5">
@@ -314,13 +333,14 @@
                     <!-- Legacy Single Image (for backward compatibility) -->
                     <div class="form-group-full">
                         <label for="image" class="form-label-standard">
-                            Single Product Image <small class="text-muted">(Legacy - for backward compatibility)</small>
+                            Single Product Image <span class="required">*</span> <small class="text-muted">(Required - for backward compatibility)</small>
                         </label>
                         <input type="file" 
                                class="form-control-standard @error('image') is-invalid @enderror" 
                                id="image" 
                                name="image" 
-                               accept="image/*">
+                               accept="image/*"
+                               required>
                         @error('image')
                             <div class="error-message">{{ $message }}</div>
                         @enderror
@@ -405,14 +425,24 @@ document.addEventListener('DOMContentLoaded', function() {
     function handleFiles(files) {
         // Check if adding new files exceeds the limit
         if (uploadedFiles.length + files.length > 5) {
-            alert('You can only upload a maximum of 5 images.');
+            Swal.fire({
+                icon: 'warning',
+                title: 'Image Limit Exceeded',
+                text: 'You can only upload a maximum of 5 images.',
+                confirmButtonColor: '#3085d6'
+            });
             return;
         }
 
         files.forEach((file, index) => {
             // Check file size (2MB limit)
             if (file.size > 2 * 1024 * 1024) {
-                alert(`File ${file.name} is too large. Maximum size is 2MB.`);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'File Too Large',
+                    text: `File ${file.name} is too large. Maximum size is 2MB.`,
+                    confirmButtonColor: '#3085d6'
+                });
                 return;
             }
 

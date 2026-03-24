@@ -8,7 +8,7 @@ function productCardHTML(p) {
     <a href="${link}" class="block">
       <div class="relative aspect-square overflow-hidden bg-gray-100">
         <img src="${p.image}" alt="${p.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-        ${p.badge ? `<span class="absolute top-3 left-3 px-3 py-1 rounded-full bg-primary text-white text-xs font-bold">${p.badge}</span>` : ''}
+        ${p.badge ? `<span class="absolute top-3 left-3 px-4 py-2 rounded-lg bg-green-600 text-white text-xs font-semibold">${p.badge}</span>` : ''}
       </div>
     </a>
     <div class="p-4">

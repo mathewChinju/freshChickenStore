@@ -165,7 +165,8 @@
     description: @json($product->description ?? ""),
     originalPrice: null,
     images: @json($all_images),
-    stock: @json($product->stock_quantity)
+    stock: @json($product->stock_quantity),
+    tags: @json($product->parsed_tags)
   };
 
   document.title = 'The Prime Cut – ' + p.name;
@@ -194,18 +195,42 @@
     btn.classList.remove('border-gray-200');
   };
 
-  // ── Badges ───────────────────────────────────────────────────
+  // ── Badges & Tags ───────────────────────────────────────────────────
   var badgesContainer = document.getElementById('productBadges');
+  var badgesHtml = '';
+  
+  // Debug: Log tags to console
+  console.log('Product tags:', p.tags);
+  
+  // Add badge if exists
   if (p.badge) {
-    badgesContainer.innerHTML = '<span class="px-3 py-1 rounded-full bg-red-50 text-primary text-xs font-bold">' + p.badge + '</span>';
+    badgesHtml += '<span class="px-4 py-2 rounded-lg bg-green-600 text-white text-xs font-semibold">' + p.badge + '</span>';
   }
+  
+  // Add tags if they exist
+  if (p.tags && p.tags.length > 0) {
+    console.log('Adding tags to badges:', p.tags);
+    badgesHtml += p.tags.map(function(tag, index) {
+      // Alternate between green and dark backgrounds
+      var isEven = index % 2 === 0;
+      var tagClass = isEven 
+        ? 'px-3 py-1.5 rounded-lg bg-green-100 text-green-800 text-xs font-medium hover:bg-green-200 transition-colors'
+        : 'px-3 py-1.5 rounded-lg bg-gray-100 text-gray-800 text-xs font-medium hover:bg-gray-200 transition-colors';
+      return '<span class="' + tagClass + '">' + tag + '</span>';
+    }).join('');
+  } else {
+    console.log('No tags found or tags array is empty');
+  }
+  
+  badgesContainer.innerHTML = badgesHtml;
+  console.log('Final badges HTML:', badgesHtml);
 
   // ── Name ─────────────────────────────────────────────────────
   document.getElementById('productName').textContent = p.name;
 
   // ── Rating ───────────────────────────────────────────────────
   document.getElementById('stars').innerHTML = Array(5).fill(0).map(function(_, i) {
-    return '<svg class="w-4 h-4 ' + (i < Math.floor(parseFloat(p.rating)) ? 'text-orange-400 fill-orange-400' : 'text-gray-200') + '" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>';
+    return '<svg class="w-4 h-4 ' + (i < Math.floor(parseFloat(p.rating)) ? 'text-orange-400 fill-orange-400' : 'text-gray-800') + '" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>';
   }).join('');
   document.getElementById('reviewCount').textContent = '(' + (Math.floor(Math.random() * 50) + 10) + ' reviews)';
 

@@ -22,17 +22,17 @@
 
 <!-- Statistics Cards -->
 <div class="row mb-4">
-    <div class="col-lg-3 col-md-6 mb-4">
-        <div class="stat-card stat-card-primary">
+    <div class="col-lg-4 col-md-6 mb-4">
+        <div class="stat-card stat-card-info">
             <div class="stat-card-icon">
-                <i class="fas fa-box"></i>
+                <i class="fas fa-cubes"></i>
             </div>
             <div class="stat-card-content">
                 <div class="stat-card-number">{{ \App\Models\Product::count() }}</div>
                 <div class="stat-card-label">Total Products</div>
                 <div class="stat-card-change">
                     <i class="fas fa-arrow-up"></i>
-                    <span>Active inventory</span>
+                    <span>Total products in store</span>
                 </div>
             </div>
             <div class="stat-card-action">
@@ -43,129 +43,126 @@
         </div>
     </div>
     
-    <div class="col-lg-3 col-md-6 mb-4">
+    <div class="col-lg-4 col-md-6 mb-4">
         <div class="stat-card stat-card-success">
             <div class="stat-card-icon">
-                <i class="fas fa-shopping-cart"></i>
+                <i class="fas fa-layer-group"></i>
             </div>
             <div class="stat-card-content">
-                <div class="stat-card-number">{{ \App\Models\Order::count() }}</div>
-                <div class="stat-card-label">Total Orders</div>
+                <div class="stat-card-number">{{ \App\Models\Category::count() }}</div>
+                <div class="stat-card-label">Categories</div>
                 <div class="stat-card-change">
-                    <i class="fas fa-chart-line"></i>
-                    <span>All time sales</span>
+                    <i class="fas fa-folder"></i>
+                    <span>Product categories</span>
                 </div>
             </div>
             <div class="stat-card-action">
-                <a href="{{ route('admin.orders.index') }}" class="btn-action">
+                <a href="{{ route('admin.categories.index') }}" class="btn-action">
                     <i class="fas fa-arrow-right"></i>
                 </a>
             </div>
         </div>
     </div>
     
-    <div class="col-lg-3 col-md-6 mb-4">
+    <div class="col-lg-4 col-md-6 mb-4">
         <div class="stat-card stat-card-warning">
             <div class="stat-card-icon">
-                <i class="fas fa-clock"></i>
+                <i class="fas fa-check-circle"></i>
             </div>
             <div class="stat-card-content">
-                <div class="stat-card-number">{{ \App\Models\Order::where('status', 'pending')->count() }}</div>
-                <div class="stat-card-label">Pending Orders</div>
+                <div class="stat-card-number">{{ \App\Models\Product::where('is_active', true)->count() }}</div>
+                <div class="stat-card-label">Active Products</div>
                 <div class="stat-card-change">
-                    <i class="fas fa-exclamation-triangle"></i>
-                    <span>Need attention</span>
+                    <i class="fas fa-arrow-up"></i>
+                    <span>Currently active</span>
                 </div>
             </div>
             <div class="stat-card-action">
-                <a href="{{ route('admin.orders.index') . '?status=pending' }}" class="btn-action">
+                <a href="{{ route('admin.products.index') }}?filter=active" class="btn-action">
                     <i class="fas fa-arrow-right"></i>
                 </a>
             </div>
         </div>
     </div>
     
-    <div class="col-lg-3 col-md-6 mb-4">
-        <div class="stat-card stat-card-info">
+    {{-- <div class="col-lg-4 col-md-6 mb-4">
+        <div class="stat-card stat-card-primary">
             <div class="stat-card-icon">
-                <i class="fab fa-whatsapp"></i>
+                <i class="fas fa-box"></i>
             </div>
             <div class="stat-card-content">
-                <div class="stat-card-number">{{ \App\Models\Order::where('is_whatsapp_inquiry', true)->count() }}</div>
-                <div class="stat-card-label">WhatsApp Inquiries</div>
+                <div class="stat-card-number">{{ \App\Models\Product::where('stock_quantity', '>', 0)->where('is_active', true)->count() }}</div>
+                <div class="stat-card-label">In-Stock Products</div>
                 <div class="stat-card-change">
-                    <i class="fas fa-comments"></i>
-                    <span>Social orders</span>
+                    <i class="fas fa-check-circle"></i>
+                    <span>Available for sale</span>
                 </div>
             </div>
             <div class="stat-card-action">
-                <a href="{{ route('admin.orders.index') . '?whatsapp=1' }}" class="btn-action">
+                <a href="{{ route('admin.products.index') }}?stock=available" class="btn-action">
                     <i class="fas fa-arrow-right"></i>
                 </a>
             </div>
         </div>
-    </div>
+    </div> --}}
 </div>
 
-<!-- Recent Orders and Quick Actions -->
+<!-- Recent Products and Quick Actions -->
 <div class="row">
     <div class="col-lg-8 mb-4">
         <div class="content-card">
             <div class="content-card-header">
                 <h5 class="content-card-title">
-                    <i class="fas fa-receipt me-2"></i>Recent Orders
+                    <i class="fas fa-box me-2"></i>Recent Products
                 </h5>
-                <a href="{{ route('admin.orders.index') }}" class="btn btn-sm btn-outline-primary">
+                <a href="{{ route('admin.products.index') }}" class="btn btn-sm btn-outline-primary">
                     View All
                 </a>
             </div>
             <div class="content-card-body">
                 @php
-                    $recentOrders = \App\Models\Order::with('product')->latest()->take(5)->get();
+                    $recentProducts = \App\Models\Product::with('category')->latest()->take(5)->get();
                 @endphp
-                @if($recentOrders->count() > 0)
+                @if($recentProducts->count() > 0)
                     <div class="table-responsive">
                         <table class="modern-table">
                             <thead>
                                 <tr>
-                                    <th>Order ID</th>
-                                    <th>Customer</th>
                                     <th>Product</th>
+                                    <th>Category</th>
+                                    <th>Price</th>
+                                    <th>Stock</th>
                                     <th>Status</th>
-                                    <th>Date</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($recentOrders as $order)
+                                @foreach($recentProducts as $product)
                                     <tr>
                                         <td>
-                                            <span class="order-id">#{{ $order->id }}</span>
-                                        </td>
-                                        <td>
-                                            <div class="customer-info">
-                                                <div class="customer-name">{{ $order->customer_name }}</div>
-                                                <div class="customer-email small text-muted">{{ $order->customer_email ?? 'N/A' }}</div>
+                                            <div class="product-info">
+                                                <div class="product-name">{{ $product->name }}</div>
+                                                <div class="product-sku small text-muted">{{ $product->sku ?? 'N/A' }}</div>
                                             </div>
                                         </td>
                                         <td>
-                                            @if($order->product)
-                                                <div class="product-info">
-                                                    <div class="product-name">{{ $order->product->name }}</div>
-                                                    <div class="product-price small text-muted">₹{{ number_format($order->product->price, 2) }}</div>
-                                                </div>
+                                            @if($product->category)
+                                                <span class="category-badge">{{ $product->category->name }}</span>
                                             @else
-                                                <span class="text-muted">Product deleted</span>
+                                                <span class="text-muted">No category</span>
                                             @endif
                                         </td>
                                         <td>
-                                            <span class="status-badge status-{{ $order->status }}">
-                                                {{ ucfirst($order->status) }}
+                                            <span class="price">${{ number_format($product->price, 2) }}</span>
+                                        </td>
+                                        <td>
+                                            <span class="stock-badge {{ $product->stock_quantity > 0 ? 'in-stock' : 'out-of-stock' }}">
+                                                {{ $product->stock_quantity }} units
                                             </span>
                                         </td>
                                         <td>
-                                            <div class="order-date small text-muted">
-                                                {{ $order->created_at->format('M j, Y') }}
-                                            </div>
+                                            <span class="status-badge status-{{ $product->stock_quantity > 0 ? 'active' : 'inactive' }}">
+                                                {{ $product->stock_quantity > 0 ? 'Available' : 'Out of Stock' }}
+                                            </span>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -174,9 +171,12 @@
                     </div>
                 @else
                     <div class="empty-state">
-                        <i class="fas fa-shopping-cart empty-icon"></i>
-                        <h6>No orders yet</h6>
-                        <p class="text-muted">Your first order will appear here</p>
+                        <i class="fas fa-box empty-icon"></i>
+                        <h6>No products yet</h6>
+                        <p class="text-muted">Your first product will appear here</p>
+                        <a href="{{ route('admin.products.create') }}" class="btn btn-primary mt-2">
+                            <i class="fas fa-plus me-2"></i>Add Product
+                        </a>
                     </div>
                 @endif
             </div>
@@ -202,13 +202,13 @@
                         </div>
                     </a>
                     
-                    <a href="{{ route('admin.orders.create') }}" class="quick-action-btn quick-action-success">
+                    <a href="{{ route('admin.categories.create') }}" class="quick-action-btn quick-action-success">
                         <div class="quick-action-icon">
                             <i class="fas fa-plus"></i>
                         </div>
                         <div class="quick-action-content">
-                            <div class="quick-action-title">Create Order</div>
-                            <div class="quick-action-desc">Manual entry</div>
+                            <div class="quick-action-title">Add Category</div>
+                            <div class="quick-action-desc">Organize products</div>
                         </div>
                     </a>
                     
@@ -222,13 +222,13 @@
                         </div>
                     </a>
                     
-                    <a href="{{ route('admin.orders.index') }}" class="quick-action-btn quick-action-outline">
+                    <a href="{{ route('admin.categories.index') }}" class="quick-action-btn quick-action-outline">
                         <div class="quick-action-icon">
-                            <i class="fas fa-shopping-cart"></i>
+                            <i class="fas fa-layer-group"></i>
                         </div>
                         <div class="quick-action-content">
-                            <div class="quick-action-title">Manage Orders</div>
-                            <div class="quick-action-desc">View all orders</div>
+                            <div class="quick-action-title">Manage Categories</div>
+                            <div class="quick-action-desc">View categories</div>
                         </div>
                     </a>
                 </div>

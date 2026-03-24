@@ -175,6 +175,14 @@
                                         </div>
                                     </div>
                                     
+                                    @if($product->parsed_tags)
+                                        <div class="product-tags">
+                                            @foreach($product->parsed_tags as $tag)
+                                                <span class="product-tag">{{ $tag }}</span>
+                                            @endforeach
+                                        </div>
+                                    @endif
+                                    
                                     <h3 class="product-title">{{ $product->name }}</h3>
                                     
                                     <div class="product-description">
@@ -652,6 +660,47 @@
 .stars {
     color: #ffc107;
     font-size: 0.85rem;
+}
+
+/* Product Tags Styling */
+.product-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.product-tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    border-radius: 2rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #ffffff;
+    transition: all 0.2s ease;
+}
+
+/* Even tags - Green background */
+.product-tag:nth-child(even) {
+    background: linear-gradient(135deg, #16a34a 0%, #22c55e 100%);
+    border: 1px solid #15803d;
+}
+
+.product-tag:nth-child(even):hover {
+    background: linear-gradient(135deg, #15803d 0%, #16a34a 100%);
+    transform: translateY(-1px);
+}
+
+/* Odd tags - Dark background */
+.product-tag:nth-child(odd) {
+    background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
+    border: 1px solid #111827;
+}
+
+.product-tag:nth-child(odd):hover {
+    background: linear-gradient(135deg, #111827 0%, #1f2937 100%);
+    transform: translateY(-1px);
 }
 
 .product-codes {

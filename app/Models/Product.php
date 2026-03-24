@@ -20,7 +20,8 @@ class Product extends Model
         'weight',
         'category_id',
         'rating',
-        'is_out_of_stock'
+        'is_out_of_stock',
+        'tags'
     ];
 
     protected $casts = [
@@ -34,7 +35,8 @@ class Product extends Model
         'category_name',
         'stock_status',
         'stock_status_badge',
-        'total_sold'
+        'total_sold',
+        'parsed_tags'
     ];
 
     public function category()
@@ -145,6 +147,15 @@ class Product extends Model
     public function getTotalSoldAttribute()
     {
         return $this->orders()->sum('quantity');
+    }
+
+    public function getParsedTagsAttribute()
+    {
+        if (empty($this->tags)) {
+            return [];
+        }
+        
+        return array_map('trim', explode(',', $this->tags));
     }
 
     public function getPrimaryImageUrlAttribute()

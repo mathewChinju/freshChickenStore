@@ -30,13 +30,13 @@ window.swapImage = function (src, btn) {
 
 // ── Badges row ────────────────────────────────────────────────
 var badgeColors = {
-  'Vacuum Packed': 'bg-accent/10 text-accent',
-  'Daily Fresh': 'bg-accent/10 text-accent',
-  'Hormone Free': 'bg-amber-50 text-amber-700',
-  'Bestseller': 'bg-primary/10 text-primary',
-  'Premium': 'bg-purple-50 text-purple-700',
-  'Popular': 'bg-orange-50 text-orange-700',
-  '20% OFF': 'bg-primary text-white',
+  'Vacuum Packed': 'bg-green-600 text-white',
+  'Daily Fresh': 'bg-green-600 text-white',
+  'Hormone Free': 'bg-green-600 text-white',
+  'Premium': 'bg-green-600 text-white',
+  'Bestseller': 'bg-green-600 text-white',
+  'Popular': 'bg-green-600 text-white',
+  'Out of Stock': 'bg-red-600 text-white'
 };
 
 var allBadges = [];
@@ -45,7 +45,7 @@ if (p.badges) p.badges.forEach(function (b) { if (allBadges.indexOf(b) === -1) a
 
 document.getElementById('productBadges').innerHTML = allBadges.map(function (b) {
   var cls = badgeColors[b] || 'bg-gray-100 text-gray-600';
-  return '<span class="inline-block px-3 py-1 rounded-full text-xs font-bold ' + cls + '">' + b + '</span>';
+  return '<span class="inline-block px-4 py-2 rounded-lg text-xs font-semibold ' + cls + '">' + b + '</span>';
 }).join('');
 
 // ── Name ──────────────────────────────────────────────────────

@@ -18,12 +18,13 @@ class CategoryController extends Controller
     public function frontendIndex(Request $request)
     {
         $categories = Category::where('is_active', true)
+            ->with('parent')
             ->withCount('products')
             ->orderBy('name')
             ->get();
             
         $products = Product::where('is_active', true)
-            ->with('category', 'images')
+            ->with('category.parent', 'images')
             ->latest()
             ->get();
             
@@ -36,8 +37,10 @@ class CategoryController extends Controller
                 'description' => $product->description,
                 'sku' => $product->sku,
                 'stock_quantity' => $product->stock_quantity,
-                'image' => $product->primary_image_url,
+                'primary_image_url' => $product->primary_image_url,
                 'category' => $product->category ? $product->category->name : 'General',
+                'category_slug' => $product->category ? $product->category->slug : 'general',
+                'category_parent' => $product->category && $product->category->parent ? $product->category->parent->name : null,
                 'rating' => $product->rating,
                 'is_out_of_stock' => $product->is_out_of_stock,
                 'stock_status' => $product->stock_status,

@@ -8,32 +8,7 @@ use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-    public function index(Request $request)
-    {
-        $query = Product::with('images', 'category')->where('is_active', true);
-        
-        // Search functionality
-        if ($request->has('search') && !empty($request->search)) {
-            $searchTerm = $request->search;
-            $query->where(function($q) use ($searchTerm) {
-                $q->where('name', 'LIKE', '%' . $searchTerm . '%')
-                  ->orWhere('description', 'LIKE', '%' . $searchTerm . '%')
-                  ->orWhere('sku', 'LIKE', '%' . $searchTerm . '%')
-                  ->orWhere('categories', 'LIKE', '%' . $searchTerm . '%')
-                  ->orWhereHas('category', function($categoryQuery) use ($searchTerm) {
-                      $categoryQuery->where('name', 'LIKE', '%' . $searchTerm . '%');
-                  });
-            });
-        }
-        
-        $products = $query->latest()->paginate(9);
-        
-        // Preserve query parameters in pagination links
-        $products->appends($request->query());
-        
-        return view('products.index', compact('products'));
-    }
-
+    
     public function productsPage(Request $request)
     {
         $query = Product::with('images', 'category')->where('is_active', true);
@@ -121,11 +96,33 @@ class ProductController extends Controller
     {
         $product->load('images', 'category');
         
-        $relatedProducts = Product::where('category_id', $product->category_id)
+        // Get all category IDs including the current category and its subcategories
+        $categoryIds = [$product->category_id];
+        
+        // Get subcategories of the current category
+        $subcategories = \App\Models\Category::where('parent_id', $product->category_id)->pluck('id');
+        $categoryIds = array_merge($categoryIds, $subcategories->toArray());
+        
+        // First try to get related products from the same category and subcategories
+        $relatedProducts = Product::whereIn('category_id', $categoryIds)
             ->where('id', '!=', $product->id)
             ->where('is_active', true)
             ->take(4)
             ->get();
+        
+        // If no related products found, get products from different categories
+        if ($relatedProducts->count() < 4) {
+            $additionalProducts = Product::whereNotIn('category_id', $categoryIds)
+                ->where('id', '!=', $product->id)
+                ->where('is_active', true)
+                ->take(4 - $relatedProducts->count())
+                ->get();
+            
+            $relatedProducts = $relatedProducts->concat($additionalProducts);
+        }
+        
+        // Ensure we only have 4 products
+        $relatedProducts = $relatedProducts->take(4);
             
         return view('products.show_fresh', compact('product', 'relatedProducts'));
     }
@@ -156,7 +153,8 @@ class ProductController extends Controller
             'whatsapp_url' => route('products.whatsapp', $product),
             'categories' => $product->categories,
             'weight' => $product->weight,
-            'is_featured' => $product->is_featured
+            'is_featured' => $product->is_featured,
+            'tags' => $product->parsed_tags
         ]);
     }
 

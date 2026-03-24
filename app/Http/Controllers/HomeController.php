@@ -14,9 +14,10 @@ class HomeController extends Controller
     public function index()
     {
         $categories = \App\Models\Category::where('is_active', true)
+            ->whereNull('parent_id') // Only get top-level categories, no subcategories
             ->withCount('products')
-            ->orderBy('name')
-            ->take(10) // Limit to 10 categories for home page
+            ->latest() // Order by latest created
+            ->take(5) // Limit to 5 categories for home page
             ->get();
             
         // Get latest product from each of the top 4 categories for variety

@@ -80,6 +80,25 @@
                         @enderror
                     </div>
 
+                    <!-- Tags -->
+                    <div class="form-group-full">
+                        <label for="tags" class="form-label-standard">
+                            Product Tags
+                        </label>
+                        <input type="text" 
+                               class="form-control-standard @error('tags') is-invalid @enderror" 
+                               id="tags" 
+                               name="tags" 
+                               value="{{ old('tags', $product->tags) }}" 
+                               placeholder="Enter tags separated by commas (e.g., fresh, organic, premium)">
+                        <div class="form-help-text">
+                            Separate multiple tags with commas. Tags will be displayed on the product page.
+                        </div>
+                        @error('tags')
+                            <div class="error-message">{{ $message }}</div>
+                        @enderror
+                    </div>
+
                     <!-- SKU and Category -->
                     <div class="form-row">
                        <div class="form-group-half">
@@ -107,10 +126,10 @@
                                     id="category_id" 
                                     name="category_id">
                                 <option value="">Select Category</option>
-                                @foreach(\App\Models\Category::where('is_active', true)->orderBy('name')->get() as $category)
+                                @foreach($categories as $category)
                                     <option value="{{ $category->id }}" 
                                             {{ (old('category_id', $product->category_id) == $category->id) ? 'selected' : '' }}>
-                                        {{ $category->name }}
+                                        {{ $category->parent ? $category->parent->name . ' > ' : '' }}{{ $category->name }}
                                     </option>
                                 @endforeach
                             </select>
@@ -305,13 +324,14 @@
                     <!-- Legacy Single Image (for backward compatibility) -->
                     <div class="form-group-full">
                         <label for="image" class="form-label-standard">
-                            Single Product Image <small class="text-muted">(Legacy - for backward compatibility)</small>
+                            Single Product Image <span class="required">*</span> <small class="text-muted">(Required - for backward compatibility)</small>
                         </label>
                         <input type="file" 
                                class="form-control-standard @error('image') is-invalid @enderror" 
                                id="image" 
                                name="image" 
-                               accept="image/*">
+                               accept="image/*"
+                               required>
                         @error('image')
                             <div class="error-message">{{ $message }}</div>
                         @enderror
@@ -412,9 +432,20 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.remove-existing-image').forEach(button => {
         button.addEventListener('click', function() {
             const imageId = this.dataset.imageId;
-            if (confirm('Are you sure you want to remove this image?')) {
-                removeExistingImage(imageId);
-            }
+            
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    removeExistingImage(imageId);
+                }
+            });
         });
     });
 
@@ -430,14 +461,24 @@ document.addEventListener('DOMContentLoaded', function() {
         // Check total images (existing + new) don't exceed 5
         const existingCount = document.querySelectorAll('.existing-image').length;
         if (existingCount + uploadedFiles.length + files.length > 5) {
-            alert('You can only have a maximum of 5 images per product.');
+            Swal.fire({
+                icon: 'warning',
+                title: 'Image Limit Exceeded',
+                text: 'You can only have a maximum of 5 images per product.',
+                confirmButtonColor: '#3085d6'
+            });
             return;
         }
 
         files.forEach((file, index) => {
             // Check file size (2MB limit)
             if (file.size > 2 * 1024 * 1024) {
-                alert(`File ${file.name} is too large. Maximum size is 2MB.`);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'File Too Large',
+                    text: `File ${file.name} is too large. Maximum size is 2MB.`,
+                    confirmButtonColor: '#3085d6'
+                });
                 return;
             }
 
@@ -541,28 +582,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
                 
                 // Show success message
-                const alertDiv = document.createElement('div');
-                alertDiv.className = 'alert alert-success alert-dismissible fade show mb-3';
-                alertDiv.innerHTML = `
-                    ${data.message}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                `;
-                const cardBody = document.querySelector('.card-body-standard');
-                const formGrid = document.querySelector('.form-grid');
-                if (cardBody && formGrid) {
-                    cardBody.insertBefore(alertDiv, formGrid);
-                } else if (cardBody) {
-                    cardBody.prepend(alertDiv);
-                }
-                
-                // Auto dismiss after 3 seconds
-                setTimeout(() => {
-                    if (alertDiv.parentNode) {
-                        alertDiv.remove();
-                    }
-                }, 3000);
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    text: data.message,
+                    timer: 3000,
+                    showConfirmButton: false
+                });
             } else {
-                alert(data.message || 'Failed to remove image');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: data.message || 'Failed to remove image',
+                    confirmButtonColor: '#3085d6'
+                });
             }
         })
         .catch(error => {
@@ -602,28 +635,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
                 
                 // Show success message
-                const alertDiv = document.createElement('div');
-                alertDiv.className = 'alert alert-success alert-dismissible fade show mb-3';
-                alertDiv.innerHTML = `
-                    ${data.message}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                `;
-                const cardBody = document.querySelector('.card-body-standard');
-                const formGrid = document.querySelector('.form-grid');
-                if (cardBody && formGrid) {
-                    cardBody.insertBefore(alertDiv, formGrid);
-                } else if (cardBody) {
-                    cardBody.prepend(alertDiv);
-                }
-                
-                // Auto dismiss after 3 seconds
-                setTimeout(() => {
-                    if (alertDiv.parentNode) {
-                        alertDiv.remove();
-                    }
-                }, 3000);
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    text: data.message,
+                    timer: 3000,
+                    showConfirmButton: false
+                });
             } else {
-                alert(data.message || 'Failed to set primary image');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: data.message || 'Failed to set primary image',
+                    confirmButtonColor: '#3085d6'
+                });
             }
         })
         .catch(error => {

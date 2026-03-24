@@ -56,7 +56,7 @@
                         @foreach($categories ?? [] as $category)
                             <option value="{{ $category->id }}" 
                                     {{ request('category_id') == $category->id ? 'selected' : '' }}>
-                                {{ $category->name }}
+                                {{ $category->parent ? $category->parent->name . ' > ' : '' }}{{ $category->name }}
                             </option>
                         @endforeach
                     </select>
@@ -71,7 +71,7 @@
                         <option value="inactive" {{ request('status') == 'inactive' ? 'selected' : '' }}>Inactive</option>
                     </select>
                 </div>
-                <div class="col-md-2">
+                {{-- <div class="col-md-2">
                     <label class="form-label">
                         <i class="fas fa-boxes me-2"></i>Stock
                     </label>
@@ -81,7 +81,7 @@
                         <option value="low_stock" {{ request('stock_status') == 'low_stock' ? 'selected' : '' }}>Low Stock</option>
                         <option value="out_of_stock" {{ request('stock_status') == 'out_of_stock' ? 'selected' : '' }}>Out of Stock</option>
                     </select>
-                </div>
+                </div> --}}
                 <div class="col-md-3">
                     <label class="form-label">
                         <i class="fas fa-sort me-2"></i>Sort By
@@ -219,14 +219,16 @@
                                 </td>
                                 <td>
                                     @if($product->category)
-                                        <span class="category-badge">{{ $product->category->name }}</span>
+                                        <span class="category-badge">
+                                            {{ $product->category->parent ? $product->category->parent->name . ' > ' : '' }}{{ $product->category->name }}
+                                        </span>
                                     @else
                                         <span class="text-muted">Uncategorized</span>
                                     @endif
                                 </td>
                                 <td>
                                     <div class="price-display">
-                                        <span class="product-price">₹{{ number_format($product->price, 2) }}</span>
+                                        <span class="product-price">${{ number_format($product->price, 2) }}</span>
                                     </div>
                                 </td>
                                 {{-- <td>
@@ -516,6 +518,12 @@ document.getElementById('searchInput').addEventListener('keypress', function(e) 
                                 <h6 class="text-muted mb-2">Description</h6>
                                 <p id="modalProductDescription" class="text-muted"></p>
                             </div>
+                            
+                            <!-- Product Tags -->
+                            <div class="product-tags-section">
+                                <h6 class="text-muted mb-2">Tags</h6>
+                                <div id="modalProductTags" class="product-tags-list"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -575,14 +583,24 @@ function showProductDetails(productId) {
             // document.getElementById('modalProductId').textContent = '#' + product.id;
             document.getElementById('modalProductName').textContent = product.name;
             document.getElementById('modalProductSku').textContent = product.sku;
-            document.getElementById('modalProductPrice').textContent = '₹' + parseFloat(product.price).toFixed(2);
+            document.getElementById('modalProductPrice').textContent = '$' + parseFloat(product.price).toFixed(2);
             // document.getElementById('modalStockBadge').innerHTML = product.stock_status_badge;
-            document.getElementById('modalProductCategory').textContent = product.category_name || 'Uncategorized';
+            document.getElementById('modalProductCategory').textContent = product.category_display || 'Uncategorized';
             document.getElementById('modalProductWeight').textContent = product.weight + ' kg';
             document.getElementById('modalProductStatus').innerHTML = product.is_active ? 
                 '<span class="status-badge status-active">Active</span>' : 
                 '<span class="status-badge status-inactive">Inactive</span>';
             document.getElementById('modalProductDescription').textContent = product.description || 'No description available';
+            
+            // Set tags
+            var tagsContainer = document.getElementById('modalProductTags');
+            if (product.parsed_tags && product.parsed_tags.length > 0) {
+                tagsContainer.innerHTML = product.parsed_tags.map(function(tag) {
+                    return '<span class="badge bg-secondary me-1 mb-1">' + tag + '</span>';
+                }).join('');
+            } else {
+                tagsContainer.innerHTML = '<span class="text-muted">No tags</span>';
+            }
             
             // Handle product images (Amazon-style gallery)
             handleProductImages(product);
@@ -891,6 +909,21 @@ function deleteProduct(productId) {
     border-top: 1px solid #e0e0e0;
 }
 
+.product-tags-section {
+    margin-top: 15px;
+}
+
+.product-tags-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.product-tags-list .badge {
+    font-size: 0.75rem;
+    padding: 0.35rem 0.65rem;
+}
+
 .info-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -991,13 +1024,23 @@ document.addEventListener('DOMContentLoaded', function() {
                     console.log('Stock status updated:', data);
                 } else {
                     console.error('Update failed:', data);
-                    alert('Failed to update stock status: ' + (data.message || 'Unknown error'));
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Update Failed',
+                        text: 'Failed to update stock status: ' + (data.message || 'Unknown error'),
+                        confirmButtonColor: '#3085d6'
+                    });
                     this.checked = !isOutOfStock; // Revert
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('An error occurred. Check console for details.');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'An error occurred. Check console for details.',
+                    confirmButtonColor: '#3085d6'
+                });
                 this.checked = !isOutOfStock; // Revert
             });
         });

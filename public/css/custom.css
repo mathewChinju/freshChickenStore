@@ -27,6 +27,15 @@ h1, h2, h3, h4, h5, h6 {
   .section-container { padding: 0 2rem; }
 }
 
+/* ── Custom Colors ──────────────────────────────────────────── */
+.bg-charcoal { background-color: #1a1f2e; }
+.text-charcoal { color: #1a1f2e; }
+.text-primary { color: #dc2626; }
+.bg-primary { background-color: #dc2626; }
+.font-display { font-family: 'Playfair Display', serif; }
+.bg-red-50 { background-color: #fef2f2; }
+.text-red-50 { color: #fef2f2; }
+
 /* ── Shadows ───────────────────────────────────────────────── */
 .shadow-card {
   box-shadow: 0 1px 12px -3px rgba(26, 31, 46, .06), 0 1px 3px -1px rgba(26, 31, 46, .04);

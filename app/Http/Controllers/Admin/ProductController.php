@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Product;
-use App\Models\ProductImage;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -86,17 +85,23 @@ class ProductController extends Controller
             $query->latest();
         }
 
-        $products = $query->paginate(10)->withQueryString();
+        $products = $query->with('category.parent')->paginate(10)->withQueryString();
         
-        // Load categories for filter dropdown
-        $categories = Category::where('is_active', true)->orderBy('name')->get();
+        // Load categories for filter dropdown with parent relationship
+        $categories = Category::where('is_active', true)
+            ->with('parent')
+            ->orderBy('name')
+            ->get();
 
         return view('admin.products.index', compact('products', 'categories'));
     }
 
     public function create()
     {
-        $categories = Category::where('is_active', true)->orderBy('name')->get();
+        $categories = Category::where('is_active', true)
+            ->with('parent')
+            ->orderBy('name')
+            ->get();
         return view('admin.products.create', compact('categories'));
     }
 
@@ -112,10 +117,11 @@ class ProductController extends Controller
             'category_id' => 'nullable|exists:categories,id',
             'images' => 'nullable|array|max:5',
             'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
             'is_active' => 'boolean',
             'rating' => 'nullable|numeric|min:0|max:5',
-            'is_out_of_stock' => 'boolean'
+            'is_out_of_stock' => 'boolean',
+            'tags' => 'nullable|string|max:500'
         ]);
 
         $data = $request->except(['images', 'image']);
@@ -152,7 +158,10 @@ class ProductController extends Controller
 
     public function edit(Product $product)
     {
-        $categories = Category::where('is_active', true)->orderBy('name')->get();
+        $categories = Category::where('is_active', true)
+            ->with('parent')
+            ->orderBy('name')
+            ->get(); 
         $product->load('images');
         return view('admin.products.edit', compact('product', 'categories'));
     }
@@ -169,10 +178,11 @@ class ProductController extends Controller
             'category_id' => 'nullable|exists:categories,id',
             'images' => 'nullable|array|max:5',
             'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
             'is_active' => 'boolean',
             'rating' => 'nullable|numeric|min:0|max:5',
-            'is_out_of_stock' => 'boolean'
+            'is_out_of_stock' => 'boolean',
+            'tags' => 'nullable|string|max:500'
         ]);
 
         $data = $request->except(['images', 'image']);
@@ -270,7 +280,7 @@ class ProductController extends Controller
 
     public function details(Product $product)
     {
-        $product->load('category', 'images');
+        $product->load('category.parent', 'images');
         
         $images = [];
         foreach ($product->images as $image) {
@@ -283,6 +293,11 @@ class ProductController extends Controller
             ];
         }
         
+        // Build category hierarchy display
+        $categoryDisplay = $product->category ? 
+            ($product->category->parent ? $product->category->parent->name . ' > ' : '') . $product->category->name 
+            : 'Uncategorized';
+        
         return response()->json([
             'id' => $product->id,
             'name' => $product->name,
@@ -290,8 +305,11 @@ class ProductController extends Controller
             'price' => $product->price,
             'weight' => $product->weight,
             'category_name' => $product->category?->name,
+            'category_display' => $categoryDisplay,
             'is_active' => $product->is_active,
             'description' => $product->description,
+            'tags' => $product->tags,
+            'parsed_tags' => $product->parsed_tags,
             'image' => $product->image, // Legacy single image
             'images' => $images, // New multiple images
             'created_at' => $product->created_at->format('M d, Y H:i'),
