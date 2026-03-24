@@ -1,0 +1,14 @@
+1. Active & inactive category - not updating
+2. product weight variant - default:500g,1kg,2kg
+                          -manualy typing: 1100 -1300g
+3. register & login form:
+4. product detailed page tags
+5.Rating mention out of? 
+6. Sort Order is considering
+7. category page disply : subcategory
+5. clear  unwanted files
+
+
+
+Whatsap number mentioned in below pages:
+fresh.blade.php, components.js, product.js, show_fresh.js

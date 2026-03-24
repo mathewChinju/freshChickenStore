@@ -1,0 +1,90 @@
+/* ── Fonts ─────────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap');
+
+/* ── Base ──────────────────────────────────────────────────── */
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: #fafafa;
+  color: #1a1f2e;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Playfair Display', serif;
+}
+
+/* ── Layout ────────────────────────────────────────────────── */
+.section-container {
+  max-width: 80rem;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+@media (min-width: 640px) {
+  .section-container { padding: 0 1.5rem; }
+}
+
+@media (min-width: 1024px) {
+  .section-container { padding: 0 2rem; }
+}
+
+/* ── Shadows ───────────────────────────────────────────────── */
+.shadow-card {
+  box-shadow: 0 1px 12px -3px rgba(26, 31, 46, .06), 0 1px 3px -1px rgba(26, 31, 46, .04);
+}
+
+.shadow-card-hover {
+  box-shadow: 0 12px 40px -8px rgba(26, 31, 46, .14);
+}
+
+/* ── Hero Slider ───────────────────────────────────────────── */
+.hero-slide {
+  position: absolute;
+  inset: 0;
+  transition: opacity .7s ease-in-out;
+}
+
+.hero-slide.active  { opacity: 1; }
+.hero-slide.inactive { opacity: 0; }
+
+/* ── Filter Buttons ────────────────────────────────────────── */
+.filter-btn {
+  background: #f3f4f6;
+  color: #6b7280;
+  cursor: pointer;
+  transition: all .2s;
+}
+
+.filter-btn.active {
+  background: #dc2626 !important;
+  color: #fff !important;
+}
+
+/* ── Price fade animation (PDP) ────────────────────────────── */
+@keyframes price-fade {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.price-updated {
+  animation: price-fade 0.3s ease-out both;
+}
+
+/* ── Hide scrollbar on sub-cat tabs ────────────────────────── */
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* ── Accent color utilities (#0593ca) ──────────────────────── */
+/* Used for: active nav link, sub-cat active tab, hero dots,
+   WhatsApp button, delivery badge, trust icons              */
+.btn-accent {
+  background-color: #0593ca;
+  color: #fff;
+  transition: background-color .2s;
+}
+.btn-accent:hover { background-color: #047aab; }
+
+.text-accent  { color: #0593ca; }
+.bg-accent    { background-color: #0593ca; }
+.bg-accent-light { background-color: #e8f5fc; }
+.border-accent { border-color: #0593ca; }
+.ring-accent  { --tw-ring-color: #0593ca; }

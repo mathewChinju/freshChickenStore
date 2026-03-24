@@ -1,0 +1,206 @@
+/* Standard Admin Form Styles */
+
+/* Standard Container */
+.container-standard {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Standard Card */
+.card-standard {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+/* Standard Card Header */
+.card-header-standard {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.header-left {
+    flex: 1;
+}
+
+.card-title-standard {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0 0 8px 0;
+    display: flex;
+    align-items: center;
+}
+
+.card-subtitle-standard {
+    font-size: 0.875rem;
+    opacity: 0.9;
+    margin: 0;
+}
+
+.header-right {
+    display: flex;
+    gap: 12px;
+}
+
+/* Standard Card Body */
+.card-body-standard {
+    padding: 24px;
+}
+
+/* Form Grid */
+.form-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.form-group-full {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group-half {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* Standard Form Controls */
+.form-label-standard {
+    font-weight: 500;
+    color: #333;
+    font-size: 0.875rem;
+    margin-bottom: 4px;
+}
+
+.form-control-standard {
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    transition: border-color 0.2s;
+}
+
+.form-control-standard:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.form-control-standard.is-invalid {
+    border-color: #dc3545;
+}
+
+/* Current Image Info (Used for Product/Category edits) */
+.current-image-info {
+    margin-top: 8px;
+    padding: 8px;
+    background: #f8f9fa;
+    border-radius: 4px;
+    border: 1px solid #e0e0e0;
+}
+
+/* Standard Checkbox */
+.form-check-standard {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-top: 4px;
+}
+
+.form-check-input-standard {
+    width: 18px;
+    height: 18px;
+    accent-color: #007bff;
+    margin-top: 2px;
+}
+
+.form-check-label-standard {
+    font-size: 0.875rem;
+    color: #333;
+    cursor: pointer;
+    line-height: 1.5;
+}
+
+.required {
+    color: #dc3545;
+}
+
+.error-message {
+    color: #dc3545;
+    font-size: 0.75rem;
+    margin-top: 4px;
+}
+
+/* Alert Info Standard */
+.alert-info-standard {
+    display: flex;
+    gap: 12px;
+    padding: 16px;
+    background-color: #e7f3ff;
+    border-left: 4px solid #007bff;
+    border-radius: 4px;
+    color: #0056b3;
+}
+
+.alert-icon {
+    font-size: 1.25rem;
+}
+
+.alert-content {
+    font-size: 0.875rem;
+}
+
+/* Standard Form Actions */
+.form-actions {
+    display: flex;
+    gap: 12px;
+    padding-top: 20px;
+    border-top: 1px solid #e0e0e0;
+    margin-top: 24px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container-standard {
+        padding: 0 16px;
+    }
+    
+    .card-header-standard {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+        padding: 16px 20px;
+    }
+    
+    .card-body-standard {
+        padding: 20px;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+    }
+    
+    .btn {
+        width: 100%;
+        justify-content: center;
+    }
+}

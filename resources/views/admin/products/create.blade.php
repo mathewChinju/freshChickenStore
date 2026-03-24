@@ -1,0 +1,544 @@
+@extends('layouts.admin')
+
+@section('title', 'Create Product - Admin')
+@section('page-title', '')
+
+@section('content')
+<div class="container-standard">
+    <div class="card-standard">
+        <div class="card-header-standard">
+            <div class="header-left">
+                <h4 class="card-title-standard">
+                    <i class="fas fa-plus me-2"></i>Create New Product
+                </h4>
+                <p class="card-subtitle-standard">Add a new product to your inventory</p>
+            </div>
+            <div class="header-right">
+                <a href="{{ route('admin.products.index') }}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left me-1"></i>Back to Products
+                </a>
+            </div>
+        </div>
+        <div class="card-body-standard">
+            <form action="{{ route('admin.products.store') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                
+                <div class="form-grid">
+                    <!-- Product Name -->
+                    {{-- <div class="form-group-full">
+                        <label for="name" class="form-label-standard">
+                            Product Name <span class="required">*</span>
+                        </label>
+                        <input type="text" 
+                               class="form-control-standard @error('name') is-invalid @enderror" 
+                               id="name" 
+                               name="name" 
+                               value="{{ old('name') }}" 
+                               placeholder="Enter product name"
+                               required>
+                        @error('name')
+                            <div class="error-message">{{ $message }}</div>
+                        @enderror
+                    </div> --}}
+                    {{-- ===== --}}
+                     <div class="form-row">
+                       
+                        <div class="form-group-half">
+                             <label for="name" class="form-label-standard">
+                            Product Name <span class="required">*</span>
+                        </label>
+                        <input type="text" 
+                               class="form-control-standard @error('name') is-invalid @enderror" 
+                               id="name" 
+                               name="name" 
+                               value="{{ old('name') }}" 
+                               placeholder="Enter product name"
+                               required>
+                        @error('name')
+                            <div class="error-message">{{ $message }}</div>
+                        @enderror
+                        </div>
+                         <div class="form-group-half">
+                            <label for="sku" class="form-label-standard">
+                                SKU <span class="required">*</span>
+                            </label>
+                            <input type="text" 
+                                   class="form-control-standard @error('sku') is-invalid @enderror" 
+                                   id="sku" 
+                                   name="sku" 
+                                   value="{{ old('sku') }}" 
+                                   placeholder="Unique product identifier"
+                                   required>
+                            @error('sku')
+                                <div class="error-message">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+
+                    {{-- ===== --}}
+
+                    <!-- Description -->
+                    <div class="form-group-full">
+                        <label for="description" class="form-label-standard">
+                            Description <span class="required">*</span>
+                        </label>
+                        <textarea class="form-control-standard @error('description') is-invalid @enderror" 
+                                  id="description" 
+                                  name="description" 
+                                  rows="3" 
+                                  placeholder="Enter product description"
+                                  required>{{ old('description') }}</textarea>
+                        @error('description')
+                            <div class="error-message">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <!-- SKU and Category -->
+                    <div class="form-row">
+                        <div class="form-group-half">
+                            <label for="price" class="form-label-standard">
+                                Price <span class="required">*</span>
+                            </label>
+                            <input type="number" 
+                                   class="form-control-standard @error('price') is-invalid @enderror" 
+                                   id="price" 
+                                   name="price" 
+                                   value="{{ old('price') }}" 
+                                   placeholder="0.00" 
+                                   step="0.01" 
+                                   min="0" 
+                                   required>
+                            @error('price')
+                                <div class="error-message">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="form-group-half">
+                            <label for="category_id" class="form-label-standard">
+                                Category
+                            </label>
+                            <select class="form-control-standard @error('category_id') is-invalid @enderror" 
+                                    id="category_id" 
+                                    name="category_id">
+                                <option value="">Select Category</option>
+                                @foreach(\App\Models\Category::where('is_active', true)->orderBy('name')->get() as $category)
+                                    <option value="{{ $category->id }}" 
+                                            {{ old('category_id') == $category->id ? 'selected' : '' }}>
+                                        {{ $category->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('category_id')
+                                <div class="error-message">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <!-- Price and Stock  -->
+                    {{--  <div class="form-row">
+                        <div class="form-group-half">
+                            <label for="price" class="form-label-standard">
+                                Price <span class="required">*</span>
+                            </label>
+                            <input type="number" 
+                                   class="form-control-standard @error('price') is-invalid @enderror" 
+                                   id="price" 
+                                   name="price" 
+                                   value="{{ old('price') }}" 
+                                   placeholder="0.00" 
+                                   step="0.01" 
+                                   min="0" 
+                                   required>
+                            @error('price')
+                                <div class="error-message">{{ $message }}</div>
+                            @enderror
+                        </div>
+                       <div class="form-group-half">
+                            <label for="stock_quantity" class="form-label-standard">
+                                Stock Quantity <span class="required">*</span>
+                            </label>
+                            <input type="number" 
+                                   class="form-control-standard @error('stock_quantity') is-invalid @enderror" 
+                                   id="stock_quantity" 
+                                   name="stock_quantity" 
+                                   value="{{ old('stock_quantity') }}" 
+                                   placeholder="0" 
+                                   min="0" 
+                                   required>
+                            @error('stock_quantity')
+                                <div class="error-message">{{ $message }}</div>
+                            @enderror
+                        </div> 
+                    </div>--}}
+                   
+                    <!-- Weight and Sort Order -->
+                    <div class="form-row">
+                        <div class="form-group-half">
+                            <label class="form-label-standard">
+                                Weight Type & Values
+                            </label>
+                            <div class="weight-input-container" style="display: flex; gap: 10px; align-items: flex-start;">
+                                <div style="flex: 1;">
+                                    <select id="weight_type" class="form-control-standard">
+                                        <option value="standard" {{ old('weight_type', 'standard') == 'standard' ? 'selected' : '' }}>Weight</option>
+                                        <option value="custom" {{ old('weight_type') == 'custom' ? 'selected' : '' }}>Custom weight</option>
+                                    </select>
+                                </div>
+
+                                <div id="standard_weight_container" style="flex: 2; display: {{ old('weight_type', 'standard') == 'standard' ? 'block' : 'none' }};">
+                                    <input type="text" id="weight_standard" class="form-control-standard" 
+                                           value="500g,1kg,2kg" readonly style="background-color: #f8f9fa; cursor: not-allowed;">
+                                </div>
+
+                                <div id="custom_weight_container" style="flex: 2; display: {{ old('weight_type') == 'custom' ? 'block' : 'none' }};">
+                                    <input type="text" id="weight_custom" class="form-control-standard" 
+                                           value="{{ old('weight_type') == 'custom' ? old('weight') : '' }}" 
+                                           placeholder="Enter values (e.g. 1100g, 1200g)">
+                                </div>
+
+                                <input type="hidden" name="weight" id="weight_final" value="{{ old('weight', '500g,1kg,2kg') }}">
+                            </div>
+                            @error('weight')
+                                <div class="error-message">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function() {
+                                const weightType = document.getElementById('weight_type');
+                                const standardContainer = document.getElementById('standard_weight_container');
+                                const customContainer = document.getElementById('custom_weight_container');
+                                const weightStandard = document.getElementById('weight_standard');
+                                const weightCustom = document.getElementById('weight_custom');
+                                const weightFinal = document.getElementById('weight_final');
+
+                                function updateFinalWeight() {
+                                    if (weightType.value === 'standard') {
+                                        weightFinal.value = weightStandard.value;
+                                        standardContainer.style.display = 'block';
+                                        customContainer.style.display = 'none';
+                                    } else {
+                                        weightFinal.value = weightCustom.value;
+                                        standardContainer.style.display = 'none';
+                                        customContainer.style.display = 'block';
+                                        weightCustom.focus();
+                                    }
+                                }
+
+                                weightType.addEventListener('change', updateFinalWeight);
+                                weightCustom.addEventListener('input', function() {
+                                    if (weightType.value === 'custom') {
+                                        weightFinal.value = this.value;
+                                    }
+                                });
+                                
+                                // Initial sync
+                                if (weightType.value === 'standard') {
+                                    weightFinal.value = "500g,1kg,2kg";
+                                } else {
+                                    weightFinal.value = weightCustom.value;
+                                }
+                            });
+                        </script>
+                        <div class="form-group-half">
+                            <label for="rating" class="form-label-standard">
+                                Rating
+                            </label>
+                            <input type="number" 
+                                   class="form-control-standard @error('rating') is-invalid @enderror" 
+                                   id="rating" 
+                                   name="rating" 
+                                   value="{{ old('rating', 4.5) }}" 
+                                   placeholder="4.5" 
+                                   step="0.1"
+                                   min="0"
+                                   max="5">
+                            @error('rating')
+                                <div class="error-message">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <div class="form-row-standard">
+                        <div class="form-group-half">
+                            <label for="sort_order" class="form-label-standard">
+                                Sort Order
+                            </label>
+                            <input type="number" 
+                                   class="form-control-standard @error('sort_order') is-invalid @enderror" 
+                                   id="sort_order" 
+                                   name="sort_order" 
+                                   value="{{ old('sort_order', 0) }}" 
+                                   placeholder="0" 
+                                   min="0">
+                            @error('sort_order')
+                                <div class="error-message">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="form-group-half d-flex align-items-center" style="padding-top: 2rem;">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="is_out_of_stock" name="is_out_of_stock" value="1" {{ old('is_out_of_stock') ? 'checked' : '' }}>
+                                <label class="form-check-label ms-2" for="is_out_of_stock">Mark as Out of Stock</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Product Images -->
+                    <div class="form-group-full">
+                        <label class="form-label-standard">
+                            Product Images <small class="text-muted">(Maximum 5 images, each up to 2MB)</small>
+                        </label>
+                        <div class="product-images-upload">
+                            <div class="file-upload-area" id="imageUploadArea">
+                                <div class="upload-placeholder">
+                                    <i class="fas fa-cloud-upload-alt fa-3x text-muted mb-3"></i>
+                                    <p class="text-muted">Click to upload or drag and drop</p>
+                                    <p class="text-muted small">PNG, JPG, GIF up to 2MB each</p>
+                                </div>
+                                <input type="file" 
+                                       id="productImages" 
+                                       name="images[]" 
+                                       class="file-input" 
+                                       accept="image/*" 
+                                       multiple
+                                       style="display: none;">
+                            </div>
+                            <div id="imagePreviewContainer" class="image-preview-container mt-3">
+                                <!-- Image previews will be added here -->
+                            </div>
+                        </div>
+                        @error('images.*')
+                            <div class="error-message">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <!-- Legacy Single Image (for backward compatibility) -->
+                    <div class="form-group-full">
+                        <label for="image" class="form-label-standard">
+                            Single Product Image <small class="text-muted">(Legacy - for backward compatibility)</small>
+                        </label>
+                        <input type="file" 
+                               class="form-control-standard @error('image') is-invalid @enderror" 
+                               id="image" 
+                               name="image" 
+                               accept="image/*">
+                        @error('image')
+                            <div class="error-message">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <!-- Product Status -->
+                    <div class="form-group-full">
+                        <label class="form-label-standard">
+                            Product Status
+                        </label>
+                        <div class="form-check-standard">
+                            <input class="form-check-input-standard @error('is_active') is-invalid @enderror" 
+                                   type="checkbox" 
+                                   id="is_active" 
+                                   name="is_active" 
+                                   value="1" 
+                                   {{ old('is_active', 1) ? 'checked' : '' }}>
+                            <label class="form-check-label-standard" for="is_active">
+                                Active
+                            </label>
+                        </div>
+                        @error('is_active')
+                            <div class="error-message">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
+
+                <!-- Form Actions -->
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save me-2"></i>Create Product
+                    </button>
+                    <a href="{{ route('admin.products.index') }}" class="btn btn-secondary">
+                        <i class="fas fa-times me-2"></i>Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@endsection
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const imageUploadArea = document.getElementById('imageUploadArea');
+    const productImagesInput = document.getElementById('productImages');
+    const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+    let uploadedFiles = [];
+
+    // Click to upload
+    imageUploadArea.addEventListener('click', function() {
+        productImagesInput.click();
+    });
+
+    // Drag and drop functionality
+    imageUploadArea.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        this.classList.add('drag-over');
+    });
+
+    imageUploadArea.addEventListener('dragleave', function(e) {
+        e.preventDefault();
+        this.classList.remove('drag-over');
+    });
+
+    imageUploadArea.addEventListener('drop', function(e) {
+        e.preventDefault();
+        this.classList.remove('drag-over');
+        
+        const files = Array.from(e.dataTransfer.files).filter(file => file.type.startsWith('image/'));
+        handleFiles(files);
+    });
+
+    // File input change
+    productImagesInput.addEventListener('change', function(e) {
+        const files = Array.from(e.target.files);
+        handleFiles(files);
+    });
+
+    function handleFiles(files) {
+        // Check if adding new files exceeds the limit
+        if (uploadedFiles.length + files.length > 5) {
+            alert('You can only upload a maximum of 5 images.');
+            return;
+        }
+
+        files.forEach((file, index) => {
+            // Check file size (2MB limit)
+            if (file.size > 2 * 1024 * 1024) {
+                alert(`File ${file.name} is too large. Maximum size is 2MB.`);
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const imageId = 'image_' + Date.now() + '_' + index;
+                uploadedFiles.push({ id: imageId, file: file, url: e.target.result });
+                
+                const preview = createImagePreview(imageId, e.target.result, file.name);
+                imagePreviewContainer.appendChild(preview);
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+
+    function createImagePreview(id, url, fileName) {
+        const previewDiv = document.createElement('div');
+        previewDiv.className = 'image-preview-item';
+        previewDiv.id = id;
+        
+        previewDiv.innerHTML = `
+            <div class="image-preview-wrapper">
+                <img src="${url}" alt="${fileName}" class="preview-image">
+                <div class="image-preview-overlay">
+                    <button type="button" class="btn btn-sm btn-danger remove-image" data-id="${id}">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="image-preview-info">
+                <small class="text-muted">${fileName}</small>
+            </div>
+        `;
+
+        // Add remove functionality
+        previewDiv.querySelector('.remove-image').addEventListener('click', function() {
+            removeImage(id);
+        });
+
+        return previewDiv;
+    }
+
+    function removeImage(id) {
+        const previewDiv = document.getElementById(id);
+        if (previewDiv) {
+            previewDiv.remove();
+        }
+        
+        // Remove from uploaded files array
+        uploadedFiles = uploadedFiles.filter(item => item.id !== id);
+        
+        // Update file input
+        updateFileInput();
+    }
+
+    function updateFileInput() {
+        // Create a new FileList with the remaining files
+        const dt = new DataTransfer();
+        uploadedFiles.forEach(item => {
+            dt.items.add(item.file);
+        });
+        productImagesInput.files = dt.files;
+    }
+
+    // Add some basic styles
+    const style = document.createElement('style');
+    style.textContent = `
+        .file-upload-area {
+            border: 2px dashed #ddd;
+            border-radius: 8px;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .file-upload-area:hover,
+        .file-upload-area.drag-over {
+            border-color: #007bff;
+            background-color: #f8f9fa;
+        }
+        
+        .image-preview-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .image-preview-item {
+            position: relative;
+            width: 150px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .image-preview-wrapper {
+            position: relative;
+            width: 100%;
+            height: 120px;
+        }
+        
+        .preview-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .image-preview-overlay {
+            position: absolute;
+            top: 0;
+            right: 0;
+            padding: 5px;
+        }
+        
+        .image-preview-info {
+            padding: 8px;
+            background-color: #f8f9fa;
+        }
+        
+        .upload-placeholder {
+            color: #6c757d;
+        }
+    `;
+    document.head.appendChild(style);
+});
+</script>
+@endpush
+
