@@ -36,8 +36,8 @@ function injectNav(active) {
 
   var html = '<nav id="siteNav" class="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-gray-100">' +
     '<div class="section-container">' +
-    '<div class="flex items-center justify-between h-16 md:h-20">' +
-    '<a href="/" class="flex items-center">' + logoHTML('h-12 md:h-16') + '</a>' +
+    '<div class="flex items-center justify-between h-auto md:h-20">' +
+    '<a href="/" class="flex items-center">' + logoHTML('h-20 md:h-18') + '</a>' +
     '<div class="hidden md:flex items-center gap-6">' + desktopLinks + '</div>' +
     '<button id="menuBtn" class="md:hidden p-2 rounded-full hover:bg-gray-100 transition-colors">' +
     '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>' +
@@ -61,7 +61,7 @@ function injectFooter() {
     '<div class="grid grid-cols-2 md:grid-cols-4 gap-8">' +
 
     '<div class="col-span-2 md-col-span-1">' +
-    '<a href="/" class="inline-block mb-4">' + logoHTML('h-14') + '</a>' +
+    '<a href="/" class="inline-block mb-4">' + logoHTML('h-16') + '</a>' +
     '<p class="text-sm leading-relaxed">Good quality fresh chicken and meat for less price. Delivered to your door.</p>' +
     '<p class="text-xs text-white/40 mt-3">Free home delivery available.</p>' +
     '</div>' +
